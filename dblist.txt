@@ -1,0 +1,28 @@
+//List of database collections 
+
+*user-sockets - MainData **
+*user-businesses - MainData - MainData **
+*user-profiles - MainData **
+*user-groups - MainData **
+*admin-controller-data - AdminOnlyInfo
+
+//All Post collections
+
+*user-posts - MainData ** 
+*story-posts - MainData **
+*channel-posts - MainData**
+*business-posts - MainData **
+*article-posts - MainData **
+*video-posts - MainData **
+*topic-posts - MainData **
+*group-posts - MainData **
+*story-posts - MainData **
+*market-place-posts - MainData **
+*video-posts - MainData **
+*all-events - MainData **
+*business-tips - MainData **
+*religious-posts - MainData **
+*user-playlists - MainData **
+
+//Leap year check
+*leap-year-status-MainData **

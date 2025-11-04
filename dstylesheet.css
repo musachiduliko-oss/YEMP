@@ -1,0 +1,235 @@
+
+@media only screen and (min-width: 985px){
+	*{
+		cursor: pointer;
+		transition: all linear 200ms;
+		outline: none;
+        -webkit-tap-highlight-color: transparent;
+	}:focus{
+        outline: none;
+    }
+	button:focus{
+        outline: none;
+    }
+	#background{
+		background: url(./Images/background.png);
+		position: fixed;
+		float: left;
+		width: 101%;
+		height: 101%;
+		margin: -1%;
+		opacity:0;
+	}
+	#center-console{
+		position: fixed;
+		float: left;
+		width:60%;
+		height:60%;
+		border-radius:24px;
+		background: white;
+		box-shadow: 0px 0px 7px;
+		margin-top: 11%;
+		margin-left: 19.5%;
+		opacity:0;
+	}
+	#logo{
+		width:100px;
+		height:100px;
+		border-radius:50px;
+		float:left;
+		margin-left: 42%;
+		margin-top: 3%;
+		margin-right: 50%;
+	}
+	#downloadBtn{
+		background:#a95151;
+		color:white;
+		font-size:20px;
+		text-shadow: 0px 0px 3px black;
+		width: 164px;
+		height: 51px;
+		border-radius: 12px;
+		box-shadow: 0px 2px 3px black;
+		border: none;
+		margin-left: 37%;
+		margin-top: 1%;
+	}
+	#welcomeHeader{
+		font-size: 214%;
+		color:#a95151;
+		font-family:calibri;
+		float:left;
+		text-shadow: -1px 0px 1px black;
+		margin-left:39%;
+		margin-top:2%;
+		font-weight: bolder;
+	}
+	#alertText{
+	    font-size: 214%;
+	    width:100%;
+	    margin-left:0px;
+	    margin-right:0px;
+	    margin-bottom:0px;
+		color:white;
+		font-family:calibri;
+		float:left;
+		opacity:0;
+		text-shadow: -1px 0px 1px #a95151;
+		margin-top:2%;
+		font-weight: bolder;
+		transition: all linear 200ms;
+		position: fixed;
+		text-align: center;
+	}
+	#insHeader{
+		font-size: 120%;
+		color:#a95151;
+		font-family:calibri;
+		float:left;
+		margin-left:1%;
+		margin-top:2%;
+		text-align: center;
+	}
+	#insXHeader{
+		font-size: 50%;
+		color:#a95151;
+		font-family:calibri;
+		float:left;
+		margin-left:32%;
+		margin-top:-2%;
+		font-size: 14px;
+		font-weight: lighter;
+	}
+	
+}
+
+@media only screen and (max-width: 980px){
+	*{
+		cursor: pointer;
+		transition: all linear 200ms;
+		outline: none;
+		-webkit-tap-highlight-color: transparent;
+	}:focus{
+        outline: none;
+    }
+	downloadBtn:focus{
+        outline: none;
+    }
+
+    body{
+        position: fixed;
+        margin:-1%;
+    }:focus{
+        outline: none;
+    }
+
+	#background{
+		background: url(./Images/background.png);
+		position: fixed;
+		float: left;
+		width: 105%;
+		height: 102%;
+		margin: -2%;
+		opacity:0;
+	}:focus{
+        outline: none;
+    }
+	#center-console{
+		position: fixed;
+		float: left;
+		width:70%;
+		height:36%;
+		border-radius:24px;
+		background: white;
+		box-shadow: 0px 0px 7px;
+		margin-top: 24%;
+		margin-left: 17%;
+		opacity: 0;
+	}:focus{
+        outline: none;
+    }
+	#logo{
+		width:170px;
+		height:170px;
+		border-radius:50px;
+		float:left;
+		margin-left: 38%;
+		margin-top: 3%;
+		margin-right: 50%;
+	}:focus{
+        outline: none;
+    }
+	#alertText{
+	    font-size: 40px;
+	    width:81%;
+	    margin-left:10%;
+	    margin-right:10%;
+	    margin-bottom:0px;
+		color:white;
+		font-family:calibri;
+		float:left;
+		text-shadow: -1px 0px 7px black;
+		margin-top:10%;
+		opacity:0;
+		font-weight: bolder;
+		transition: all linear 200ms;
+		position: fixed;
+		text-align: center;
+	}:focus{
+        outline: none;
+    }
+	#downloadBtn{
+		background:#a95151;
+		color:white;
+		font-size:36px;
+		text-shadow: 0px 0px 3px black;
+		width: 80%;
+		height: 73px;
+		border-radius: 12px;
+		box-shadow: 0px 2px 3px black;
+		border: none;
+		margin-left: 10%;
+		margin-top: 8%;
+	}:focus{
+        outline: none;
+    }
+	#welcomeHeader{
+		font-size: 385%;
+		color:#a95151;
+		font-family:calibri;
+		float:left;
+		text-shadow: -1px 0px 1px black;
+		width:100%;
+		text-align:center;
+		margin-top:2%;
+		font-weight: bolder;
+		margin-bottom: 0px;
+	}:focus{
+        outline: none;
+    }
+	#insHeader{
+		font-size: 168%;
+		color:#a95151;
+		font-family:calibri;
+		float:left;
+		margin-left:10%;
+		margin-top:0%;
+		text-align: center;
+		width: 80%;
+	}:focus{
+        outline: none;
+    }
+	#insXHeader{
+		font-size: 40%;
+		color:#a95151;
+		font-family:calibri;
+		float:left;
+		margin-top:-2%;
+		width:100%;
+		text-align:center;
+		font-size: 31px;
+		font-weight: lighter;
+	}:focus{
+        outline: none;
+    }
+}
