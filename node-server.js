@@ -20,12 +20,12 @@ const ffmpeg = import("fluent-ffmpeg")
 import { MongoClient } from 'mongodb'
  
  // Enable command monitoring for debugging
-/* 
 const mongoClient = new MongoClient('mongodb+srv://shopmatesales:N6Npa7vcMIaBULIS@cluster0.mgv7t.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0', { monitorCommands: true });
 mongoClient.connect()// Enable command monitoring for debugging
-*/
+/* 
 const mongoClient = new MongoClient(uri, { monitorCommands: true });
 mongoClient.connect()// Enable command monitoring for debugging
+*/
 //server calls management
 
 import express from 'express'
@@ -9807,7 +9807,7 @@ app.post("/check-conversation-existence", async(request,response)=>{
 		}
 	}
 	
-	//setInterval(maintenanceProcess,1000*30)
+	setInterval(maintenanceProcess,1000*30)
 
 	setInterval(clearUpVerifications,30000)
 	
@@ -10600,6 +10600,124 @@ async function assessPlaylistVideos(videos,paidPlaylist,categories){
     return output
 }
 
+async function EvaluateBusinessForInterest(userId,businessId){
+    let output = false 
+    try{
+        
+        let getBusinesses = await mongoClient.db("ZedMoney").collection("MainData").findOne({"name":"user-businesses"})
+        let businesses = getBusinesses.body 
+        let business = businesses.find((businesses)=>{
+            return businesses.businessId === businessId
+        })
+        
+        let category = business.category 
+        let user = await GetUserData(userId)
+        let interests = user.interests
+        if(interests.includes(category) ==  true){
+            output = true
+        }else{
+            if(
+                evaluateFriendsForBizInterest(userId,businessId) || 
+                evaluateTwinsForPostsViewed(userId,businessId)
+            ){
+                output =  true
+            }
+        }
+        
+    }catch{
+        
+    }
+    return output
+}
+
+async function PostSideViewsAssessment(accessorId,userId){
+    let output = false 
+    //get posts viewed in the past two months 
+    let accessorData = await GetUserData(accessorId)
+    let viewedPosts = accessorData.viewedPosts 
+    let assessMonth = (date)=>{
+        let output = false 
+        let currentMonth = serverTime.month 
+        if(date.month == currentMonth || date.month == (currentMonth-1) && (currentMonth-1) > 0){
+            output = true
+        }
+        
+        return output
+    }
+    let friends = accessorData.friends 
+    let friendsViewed = []
+    for(var i=0; i<viewedPosts.length;i++){
+        let post = viewedPosts[i]
+        let basicDetails = post.basicDetails 
+        let ownerId = basicDetails.ownerId 
+        if(assessMonth(basicDetails.timePosted)){
+            if(friends.includes(ownerId) == true){
+                if(friendsViewed.includes(ownerId) == false){
+                    friendsViewed.push(ownerId)
+                }
+            }
+        }
+    }
+    let count = 0 
+    for(var i=0; i<friendsViewed.length; i++){
+        let friend = friendsViewed[i]
+        let friendData = await GetUserData(friend)
+        let vpx = friendData.viewedPosts 
+        for(var x=0; x<vpx.length; x++){
+            let p = vpx[x]
+            let basicDetails = p.basicDetails
+            let ownerIdx = basicDetails.ownerId 
+            if(ownerIdx === userId){
+                count = count+1
+            }
+        }
+    }
+    if(count >= 10){
+        output = true
+    }
+    return output
+}
+
+async function filterForConsistency(data){
+    let keys = data.keys 
+    let collection = []
+    for(var i=0; i<keys.length; i++){
+        let classx = keys[i]
+        let array = data[classx]
+        for(var x=0; x<array.length; x++){
+            let post = array[x]
+            let ownerId = post.basicDetails.ownerId 
+            let search = collection.find((collection)=>{
+                return collection.userId === ownerId
+            })
+            if(!search){
+                collection.push(
+                    {
+                        "userId": ownerId,
+                        "average": await processForConsistency(ownerId)
+                    }
+                )
+            }
+        }
+        collection.sorted((a,b)=>{
+            a.average - b.average
+        })
+        let newArray = []
+        for(var i=0; i<collection.length; i++){
+            let userIdx = collection[i].userId 
+            for(var x=0; x<array.length; x++){
+                let post = array[x]
+                let ownerId = post.basicDetails.ownerId 
+                if(ownerId === userIdx){
+                    newArray.push(post)
+                }
+            }
+        }
+        data[classx] = newArray
+    }
+    return data
+}
+
 //Video organisation functions 
 
 let primeUsers = []
@@ -10974,7 +11092,7 @@ async function getPlaylists(userId,category){
 async function processVideosByUser(userId, videos, category){
     let output; 
     try{
-        if(){
+        if(videos == null){
             let byInterest = await getVideosByInterest(userId,category)
             let byTrending = await getTrendingVideos()
             let playlists = await getPlaylists(userId,category)
@@ -11546,6 +11664,18 @@ const ProcessVideoPosts = async(feed,userId)=>{
 	
 }
 
+async function businessFeedAssembler(unpromotedPosts,promotedPosts){
+    let output = []
+    
+    return output
+}
+
+async function FinalBusinessPostProcessing(posts){
+    let output; 
+    
+    return output
+}
+
 const GetBizPostsByInterest = async(feed,userId)=>{
 	
 	let output;
@@ -11635,8 +11765,10 @@ const GetBizPostsByInterest = async(feed,userId)=>{
 		
 	}
 	
+	let finalOut = await FinalBusinessPostProcessing(businessPostsOut)
+	
 	output = {
-		"businessPosts" : businessPostsOut,
+		"businessPosts" : finalOut,
 		"userPosts" : feed.userPosts,
 		"channelPosts" :  feed.channelPosts,
 		"articles" : feed.articles,
@@ -11918,9 +12050,9 @@ const InterestsProcessor = async(feed,userId)=>{
 	let similar_area = await GetPostsByRegion(feed,userId);
 	let posts_by_interest = await GetPostsByInterest(feed,userId);
 	let process_business_posts_by_interest = await GetBizPostsByInterest(posts_by_interest,userId)
-	let filterVideos = await ProcessVideoPosts(process_business_posts_by_interest,userId)
+	let consistencyFilter = await filterForConsistency(process_business_posts_by_interest)
 	
-	output = process_business_posts_by_interest
+	output = consistencyFilter
 	
 	return output 
 	
