@@ -15,17 +15,17 @@ import cors from 'cors';
 import {spawn} from "child_process";
 import {PassThrough} from "stream"
 
-const ffmpeg = import("fluent-ffmpeg")
+//import {ffmpeg} from "fluent-ffmpeg"
 
 import { MongoClient } from 'mongodb'
  
  // Enable command monitoring for debugging
+/* 
 const mongoClient = new MongoClient('mongodb+srv://shopmatesales:N6Npa7vcMIaBULIS@cluster0.mgv7t.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0', { monitorCommands: true });
 mongoClient.connect()// Enable command monitoring for debugging
-/* 
+*/
 const mongoClient = new MongoClient(uri, { monitorCommands: true });
 mongoClient.connect()// Enable command monitoring for debugging
-*/
 //server calls management
 
 import express from 'express'
@@ -37,7 +37,7 @@ const server = http.createServer(app)
 
 const port = process.env.port || 4000
 
-const ss = import('socket.io-stream')
+//const ss = import('socket.io-stream')
 
 const io = new Server(server)
 
@@ -52,6 +52,7 @@ app.use(upload());
 app.use(express.static(__dirname));
 app.use(express.static(__dirname+'/Images'));
 app.use(express.static(__dirname+'/Assets'));
+app.use(express.static(__dirname+'/Libraries'));
 
 let checkTempDir = fs.existsSync(tempDir)
 
@@ -365,19 +366,21 @@ async function updateActiveSockets(sockets){
     }
 }
 
-const activateUserSocket = async(userId)=>{
+const activateUserSocket = async(userId,IMEI)=>{
     let activeUsers = await getActiveUsers()
     let search = activeUsers.find((activeUsers)=>{
         return activeUsers.userId === userId
     })
-    search.active = true
-    search.alreadyLoggedIn = true
-	
-	transferSocket.emit("recieve-active-user",{
-		"userId": search.userId
-	})
+	if(IMEI === search.IMEI){		
+		search.active = true
+		search.alreadyLoggedIn = true
+		
+		transferSocket.emit("recieve-active-user",{
+			"userId": search.userId
+		})
 
-    await updateActiveSockets(activeUsers)
+		await updateActiveSockets(activeUsers)
+	}
 }
 
 const addUserSocket = async(userId)=>{
@@ -1390,15 +1393,12 @@ io.on("connection", (socket)=>{
 				}
 				
 			}
-			
-			
-			
 			socket.emit("offline-users",{"data": list})
 		}
 	},30000)
 	
 	socket.on("affirm",(data)=>{
-		activateUserSocket(data.userId)
+		activateUserSocket(data.userId,data.IMEI)
 	});
 	
 	
@@ -1419,6 +1419,13 @@ app.get("/process-payment",async(request,response)=>{
 app.get("/",async(request,response)=>{
     try{
         response.sendFile(__dirname+"/downloadmenu.html") 
+    }catch{
+        response.send(JSON.stringify({"status":"server-error"}))
+    }
+})
+app.get("/doccie",async(request,response)=>{
+    try{
+        response.sendFile(__dirname+"/DocumentCreatorTool.html") 
     }catch{
         response.send(JSON.stringify({"status":"server-error"}))
     }
@@ -5707,11 +5714,12 @@ app.post("/login-user" , async( request, response)=>{
         let data = request.body
         let email = data.email
         let password = data.password 
-        
-		console.log(data)
+		let IMEI = data.IMEI
 		
         let getUsers = await mongoClient.db("YEMPData").collection("MainData").findOne({"name":"user-profiles"})
-        
+        let getSockets = await mongoClient.db("YEMPData").collection("MainData").findOne({"name":"user-sockets"})
+		let sockets = getSockets.body
+		
         let users = getUsers.body 
         
         let search = users.find((users)=>{
@@ -5725,8 +5733,15 @@ app.post("/login-user" , async( request, response)=>{
             let password2 = search.password
             
             if(password === password2){
-                await activateUserSocket(search.userId)               
+				
+				socket.IMEI = IMEI 
+				
+				await mongoClient.db("YEMPData").collection("MainData").updateOne({"name":"user-sockets"},{$set:{"body":sockets}})
+				
+                await activateUserSocket(search.userId,IMEI)               
+				
 				response.send(JSON.stringify({"status" : "success","data":search}))
+				
             }else{
                 response.send(JSON.stringify({"status" : "wrong-password"}))
             }
@@ -9822,7 +9837,7 @@ app.post("/check-conversation-existence", async(request,response)=>{
 			
 			let response = await get.json()
 			
-			console.log(response)
+			await mongoClient.db("YEMPData").collection("Main").updateOne({"name":"exchange-rates"},{$set:{"body":response}})
 			
 			output = response
 			
@@ -9830,10 +9845,19 @@ app.post("/check-conversation-existence", async(request,response)=>{
 			
 		}catch{
 			
+			let get = await mongoClient.db("YEMPData").collection("MainData").findOne({"name":"exchange-rates"})
+			
+			let response = get.body
+			
+			output = response
+			
+			onboardRates = output
+			
 		}
 		
 		return output
 	}
+	
 	setInterval(()=>{
 		if(onboardRates == null){
 				getRates()
@@ -11676,6 +11700,25 @@ async function FinalBusinessPostProcessing(posts){
     return output
 }
 
+const businessPostRegexCheck = (post,interests)=>{
+	let output = false 
+	
+	var hits = 0
+	
+	for(var i=0; i < interests.length; i++){
+		
+		let regex = RegExp(interests[i])
+		if(regex.test(post.description) == true){
+			if( hits >= 3) {
+				output = true
+			}
+		}
+		
+	}
+	
+	return output
+}
+
 const GetBizPostsByInterest = async(feed,userId)=>{
 	
 	let output;
@@ -11686,28 +11729,38 @@ const GetBizPostsByInterest = async(feed,userId)=>{
 	
 	let user = await GetUserData(userId)
 	
-	//Map of user interests versus array of associated business categories
-	
-	let map = await getBusinessToInterestsMap()
-	
-	//Evaluate user interests verses business category
-	async function evaluateInterests(businessId,interests){
-		let output = true
+	const evaluateInterests = async(businessId,interests,friends)=>{
+		let output = false 
 		
-		let business = await GetBusinessData(businessId)
-		
-		let category = business.category
-		
-		for(var i=0; i<interests.length; i++){
+		let getBusinesses = await mongoClient.db("YEMPData").collection("MainData").findOne({"name":"user-businesses"})
+		let businesses = getBusinesses.body 
+		let business = businesses.find((businesses)=>{
+			return businesses.businessId === businessId
+		})
+		const checkOtherUsers = async function(category,friends,post){
 			
-			let interest = interests[i]
+			let output = false 
 			
-			let associatedCategories = map[interest]
+			let hits = 0
 			
-			if(associatedCategories.includes(category) == true || map[interest] == "General"){
-				output = true
+			for(var i = 0; i<friends.length; i++){
+				let user = await GetUserData(friends[i])
+				let interests = user.interests
+				if(interests.includes(category) == true){
+					hits = hits+1
+				}
 			}
 			
+			if(hits >= 10){
+				output = true
+			}
+			return output
+			
+		}
+		if(business){
+			if(interests.includes(business.category) == true || checkOtherUsers(business.category,friends) || businessPostRegexCheck(post,user.interests)){
+				output = true
+			}
 		}
 		
 		return output
@@ -11728,12 +11781,13 @@ const GetBizPostsByInterest = async(feed,userId)=>{
 	
 	//get business posts from pages which suite user interests
 	let userInterests = user.interests
+	let userFriends = user.friends
 	for(var i=0; i<businessPosts.length; i++){
 		
 		let post = businessPosts[i]
 		let basicDetails = post.basicDetails 
 		let businessId = basicDetails.businessId
-		if(evaluateInterests(businessId,userInterests) == true){
+		if(evaluateInterests(businessId,userInterests,userFriends,post) == true || businessPostRegexCheck(post,userInterests)){
 			businessPostsOut.push(post)
 		}
 		
@@ -11765,10 +11819,8 @@ const GetBizPostsByInterest = async(feed,userId)=>{
 		
 	}
 	
-	let finalOut = await FinalBusinessPostProcessing(businessPostsOut)
-	
 	output = {
-		"businessPosts" : finalOut,
+		"businessPosts" : businessPostsOut,
 		"userPosts" : feed.userPosts,
 		"channelPosts" :  feed.channelPosts,
 		"articles" : feed.articles,
@@ -12048,7 +12100,7 @@ const InterestsProcessor = async(feed,userId)=>{
 	
 	/*Similar Area Posts*/
 	let similar_area = await GetPostsByRegion(feed,userId);
-	let posts_by_interest = await GetPostsByInterest(feed,userId);
+	let posts_by_interest = await GetPostsByInterest(similar_area,userId);
 	let process_business_posts_by_interest = await GetBizPostsByInterest(posts_by_interest,userId)
 	let consistencyFilter = await filterForConsistency(process_business_posts_by_interest)
 	

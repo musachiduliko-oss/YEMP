@@ -1,0 +1,545 @@
+*{
+	cursor: pointer
+}	
+
+body{
+	background: grey;
+	height:1000px;
+	overflow: scroll
+}
+table{
+	width:100%;
+	border-radius:10px
+}
+.half_div{
+	width:50%;
+	float:left;
+	font-family: Segoe UI
+}
+#download{
+	border-radius: 12px;
+	background: blue;
+	width: 100px;
+	height: 39px;
+	color:white;
+	margin-top:5%;
+	margin-left: 1%;
+	position:fixed;
+	float:left;
+	border: none;
+}
+#page-area{
+	width: 1020px;
+	height: 1471px;
+	background:white;
+	margin-top: 13%;
+	box-shadow: 0px 0px 8px black;
+	margin-left: 8%;
+	float:left;
+	margin-bottom:12%
+}
+
+#bubbleOne{
+	float:right;
+	margin-top:2%;
+	margin-right:1%;
+	height: 83px;
+	width: 384px;
+	border: solid 1px black;
+	border-radius:10px
+}
+
+#set_one{
+	width:60%;
+	height:100%;
+	float:left
+}
+#set_two{
+	width: 17%;
+	height:100%;
+	float:left;
+	border-left: 1px solid black;
+	margin-left: 73px;
+}
+#titleHeader{
+	font-family: Segoe UI;
+	color: #00a1ff;
+	text-align: center;
+	width: 100%;
+	margin-left: 16%;
+	margin-right:5%;
+	font-size: 17px;
+	font-weight: bold;
+	margin-top: 12px;
+}
+#xHeader{
+	font-family: Segoe UI;
+	color: #000000;
+	text-align: center;
+	width: 98%;
+	margin-left: 14%;
+	margin-right:5%;
+	font-size: 12px;
+	font-weight: bold;
+	padding: 0px;
+	margin-top: -19px;
+	margin-bottom: 7%;
+}
+#logos{
+	width: 100%;
+	float:left;
+	margin-top: -20px;
+}
+#mchoice{
+	float:left;
+	width: 189px;
+	margin-left: 8%;
+}
+#gotv{
+	float:left;
+	width: 194px;
+	margin-left: 4%;
+}
+#sc_header{
+	font-size: 9px;
+	width: 26px;
+	font-weight: bold;
+	padding: 2px;
+}
+#sc_header2{
+	font-size: 10px;
+	width: 32px;
+	padding: 4px;
+}
+
+table,th,td{
+	border: solid 1px black;
+	border-collapse: collapse;
+	font-family:Segoe UI
+}
+.space{
+	width: 11px;
+	height: 8px;
+	background: #f9d695;
+}
+.space1{
+	width: 11px;
+	height: 8px;
+	background: #e5f8ff;
+}
+.space12{
+	height: 8px;
+	background: #e5f8ff;
+}
+.space123{
+	height: 8px;
+	background: #fffae5;
+}
+td{
+	height: 8px;
+}
+#table_one{
+	float:left;
+	margin-top: 52px;
+	width: 100%;
+} 
+#tables{
+	width: 47%;
+	float:left;
+	margin-left: 2.2%;
+}
+.x1{
+	color: #db9f2f;
+}
+.b1{
+	width: 96%;
+	border: 1px solid black;
+	border-radius:12px;
+	margin-top: 3px;
+	margin-left: 2%;
+	float:left;
+	padding-bottom: 10px;
+	overflow: hidden;
+}
+#sub-details1{
+	margin-top:1%
+}
+.sub_heder{
+	text-align: center;
+	width:100%;
+	padding: 3px;
+	font-family: Segoe UI;
+	margin: 0%;
+	font-size: 14px;
+	font-weight: bolder;
+}
+
+#ww1{
+	background: #b4e0f9;
+	color: #4aa5f5;
+}
+#ww2{
+	background: #aeabd1;
+	color: #0f559f;
+}
+#ww23{
+	background: #f1f187;
+	color: black
+}
+#ww13{
+	background: #c3c3bd;
+}
+
+.cc12{
+	width: 49%;
+	margin-left: 6.5px;
+	float:left;
+	margin-top:1%;
+	margin-right: 15px;
+}
+.cc12u{
+	width: 49%;
+	margin-left: 6.5px;
+	float:left;
+	margin-top: 0%;
+}
+.cc123{
+	width: 48.8%;
+	margin-left: 8.5px;
+	float:left;
+	margin-top: -3.18%;
+}
+.cc123x{
+	width: 48.8%;
+	margin-left: 0.5%;
+	float:left;
+	margin-top: 4%;
+}
+.cc_personal{
+	width: 1px;
+	font-size: 10px;
+	text-align:center
+}
+#cc_surname{
+	width:20px;
+	font-size: 12px;
+	padding: 6px;
+}
+#cc_firstnames{
+	width:20px;
+	font-size: 9px;
+	padding: 6px;
+}
+#cc_email{
+	width:20px;
+	font-size: 9px;
+	padding: 6px;
+}
+#cc_address{
+	width:20px;
+	font-size: 9px;
+	padding: 6px;
+}
+#cc_fax{
+	width:20px;
+	font-size: 9px;
+	padding: 6px;
+}
+#prtals{
+	height: 42px;
+}
+#cc_mr{
+	font-size:10px;
+	width:12px;
+	padding: 8px;
+}
+#cc_other{
+	font-size:10px;
+	width:12px;
+	padding: 8px;
+}
+#cc_initials{
+	font-size:10px;
+	width:12px;
+	padding: 8px;
+}
+#owtx{
+	width:12px;
+	height:12px;
+	float:left;
+	margin-left: 6%;
+	margin-top: 3%;
+	border:1px solid black
+}
+#owtxx{
+	height:12px;
+	float:left;
+	margin-left: 20%;
+	margin-top: 2%;
+	font-size: 13px;
+	font-family: Segoe UI;
+	margin-bottom: 1%;
+}
+#owtx1{
+	width:12px;
+	height:12px;
+	float:left;
+	margin-left: 6%;
+	margin-top: 3%;
+	border:1px solid black
+}
+#owtxx1{
+	height:12px;
+	float:left;
+	margin-left: 2%;
+	margin-top: 3.0%;
+	font-size: 13px;
+	font-family: Segoe UI;
+	margin-bottom: 1%;
+	font-weight: bold;
+}
+#stamp_header{
+	width:100%;
+	font-size: 15px;
+	font-family: Segoe UI;
+	text-align:center;
+	margin-bottom: 0px;
+	margin-top: 0px;
+	font-weight: bolder
+}
+#stamp-area{
+	width:90%;
+	height: 220px;
+	float:left;
+	border-radius:12px;
+	border:1px solid black;
+	margin-top:1%;
+	margin-left: 6%;
+	margin-right: 4%;
+}
+#ert{
+	margin-top: -4%;
+	float: left;
+}
+#price{
+	float: right;
+	font-family: Impact;
+	font-size: 18px;
+	margin-right: 2%;
+	color:grey;
+	margin-top: 2%;
+}
+#packageOption{
+	width: 100%;
+	float:left;
+	height: 35px;
+}
+#packagesHeader{
+	font-size: 20px;
+	font-weight: bold;
+	width: 100%;
+	text-align: center;
+	margin-top: 0px;
+	margin-bottom: 0px;
+}
+#pmthd{
+	font-size: 12px;
+	font-weight: bold;
+	width: 100%;
+	text-align: center;
+	margin-top:1%;
+	margin-bottom:0px
+}
+#packageData{
+	width: 30%
+}
+#otw{
+	width: 70%
+}
+.payMeth{
+	width:20%;
+	float:left
+}
+
+#pLineNum1{
+	float: right;
+	margin-right:2%;
+	margin-left:70%;
+	font-weight: bolder;
+	margin-top:2%;
+	margin-bottom:0px;
+	font-family: Segoe UI;
+	font-size: 20px;
+	color: grey
+}
+#pLineNum2{
+	float: right;
+	margin-right:2%;
+	font-weight: bold;
+	margin-top:2%;
+	margin-bottom:0px;
+	font-family: Segoe UI;
+	font-size: 16px
+}
+#pLineNum3{
+	float: right;
+	margin-right:2%;
+	font-weight: bold;
+	margin-top:2%;
+	margin-bottom:0px;
+	font-family: Segoe UI;
+	font-size: 16px
+}
+#rctNum1{
+	float: left;
+	margin-right:70%;
+	margin-left:2%;
+	margin-top: 4%;
+	margin-bottom:0px;
+	font-family: Segoe UI;
+	font-size: 12px;
+}
+#rctNum2{
+	float: left;
+	margin-right:70%;
+	margin-left:2%;
+	font-weight: bolder;
+	margin-top:2%;
+	margin-bottom:0px;
+	font-family: Segoe UI;
+	font-size: 16px;
+	color: red;
+	margin-top:0px
+}
+#agentSignSect{
+	border-radius:10px;
+	border: 1px solid black;
+	width:45%;
+	height: 27%;
+	float:left;
+	margin-left:2%;
+	margin-top: -5%;
+}
+#agent-sign{
+	float:left;
+	margin-left:2%;
+	font-size: 10px;
+	font-family: Segoe UI;
+	margin-top: 16%;
+}
+#cusNumSect{
+	border-radius:10px;
+	border: 1px solid black;
+	width:61%;
+	height: 25%;
+	float:right;
+	margin-right:2%;
+	margin-top: -6%;
+}
+#cus-num{
+	float:left;
+	margin-left:2%;
+	font-size: 10px;
+	font-family: Segoe UI;
+	margin-top: 11%;
+}
+#agentTable{
+	margin-top: 6px;
+	width:100%
+}
+#recommendation{
+	width: 90%;
+	margin-left: 6%;
+	margin-top:1%;
+	font-family: Segoe UI;
+	font-size: 10px;
+	float:left
+}
+.s31{
+	border-radius:10px;
+	border: 1px solid black;
+	width: 92%;
+	height: 11%;
+	float:left;
+	margin-left:2%;
+	margin-top: 2%;
+}
+.s312{
+	float:left;
+	margin-left:2%;
+	font-size: 11px;
+	font-family: Segoe UI;
+	margin-top: 8%;
+	margin-bottom: 7px;
+}
+#s1{
+	float:left;
+	width: 67%
+}
+#s2{
+	float:left;
+	width:33%
+}
+
+#df1{
+	float:left;
+	font-family: Segoe UI;
+	font-size:12px;
+	margin-left:2%
+}
+ul{
+	width: 100%
+}
+
+.df2{
+	width: 100%;
+	font-size: 12px;
+	font-family: Segoe UI;
+	float: left;
+}
+#df3{
+	font-size: 12px;
+	font-family: Segoe UI;
+	margin-left: 2%;
+	float: left;
+}
+#registration-number{
+	float:left;
+	margin-top: 143px;
+	font-size: 9px;
+	font-family: Segoe UI;
+	font-weight: bold;
+	margin-left: -89%;
+}
+#print-mark{
+	float:right;
+	margin-right: -5.8%;
+	transform: rotate(-90deg);
+	font-size: 7.9px;
+	font-family: Segoe UI;
+	margin-top: -66px;
+}
+#bhs{
+	float:left;
+	margin-top: -134%;
+	margin-left:0px;
+	background: black;
+	width:12px;
+	height: 38px;
+}
+#bhs2{
+	float:left;
+	margin-top: 2%;
+	margin-left:0px;
+	background: black;
+	width:12px;
+	height: 38px;
+}
+#bhs3{
+	float:right;
+	margin-top: 2%;
+	margin-right:0px;
+	background: black;
+	width:12px;
+	height: 38px;
+}
