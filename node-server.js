@@ -320,7 +320,8 @@ function checkTime(date){
         let stz = serverTime.timezone 
         let diff = utz-stz 
         let targetHours = serverTime.hours + diff
-		console.log("target hours ----"+targetHours)
+		console.log(utz)
+		console.log("target hours ---->"+targetHours)
         if(
             serverTime.month == date.month &&
             serverTime.year == date.year
