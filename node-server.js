@@ -335,6 +335,7 @@ function checkTime(date){
             }
         }
     }*/
+	allocateTime()
 	if(
         serverTime.date == date.date &&
         serverTime.month == date.month &&
