@@ -336,6 +336,7 @@ function checkTime(date){
         }
     }*/
 	allocateTime()
+	console.log(serverTime,date)
 	if(
         serverTime.date == date.date &&
         serverTime.month == date.month &&
@@ -343,7 +344,6 @@ function checkTime(date){
         ){
         output = true
     }
-    
     return output
 }	
 
@@ -7459,7 +7459,7 @@ app.post("/check-conversation-existence", async(request,response)=>{
 	app.post("/check-date-and-time", (request,response)=>{
 		try{
 			
-			let time = request.body 
+			let time = request.body.time 
 			
 			if(
 				checkTime(time) == true 
