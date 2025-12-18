@@ -20,12 +20,12 @@ import {PassThrough} from "stream"
 import { MongoClient } from 'mongodb'
  
  // Enable command monitoring for debugging
-/* 
 const mongoClient = new MongoClient('mongodb+srv://shopmatesales:N6Npa7vcMIaBULIS@cluster0.mgv7t.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0', { monitorCommands: true });
 mongoClient.connect()// Enable command monitoring for debugging
-*/
+/* 
 const mongoClient = new MongoClient(uri, { monitorCommands: true });
 mongoClient.connect()// Enable command monitoring for debugging
+*/
 //server calls management
 
 import express from 'express'
@@ -9812,7 +9812,7 @@ app.post("/check-conversation-existence", async(request,response)=>{
 	async function maintenanceProcess(){
 		try{
 			
-			let getData = await fetch("https://youthempowermentapp.onrender.com/check-maintenance")
+			let getData = await fetch("https://yempapp.onrender.com/check-maintenance")
 			let data = await getData.json()
 			let status = data.status 
 			console.log("Maintenance Status -->"+status)	
