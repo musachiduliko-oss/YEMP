@@ -306,7 +306,7 @@ async function timeProcessor(){
 
 function checkTime(date){
     let output = false 
-    
+    /*
     if(serverTime.timezone == date.timezone){
         if(
             serverTime.date == date.date &&
@@ -334,6 +334,13 @@ function checkTime(date){
                 }
             }
         }
+    }*/
+	if(
+        serverTime.date == date.date &&
+        serverTime.month == date.month &&
+        serverTime.year == date.year
+        ){
+        output = true
     }
     
     return output
