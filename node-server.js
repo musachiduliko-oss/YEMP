@@ -20,12 +20,12 @@ import {PassThrough} from "stream"
 import { MongoClient } from 'mongodb'
  
  // Enable command monitoring for debugging
+/* 
 const mongoClient = new MongoClient('mongodb+srv://shopmatesales:N6Npa7vcMIaBULIS@cluster0.mgv7t.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0', { monitorCommands: true });
 mongoClient.connect()// Enable command monitoring for debugging
-/* 
+*/
 const mongoClient = new MongoClient(uri, { monitorCommands: true });
 mongoClient.connect()// Enable command monitoring for debugging
-*/
 //server calls management
 
 import express from 'express'
@@ -306,7 +306,7 @@ async function timeProcessor(){
 
 function checkTime(date){
     let output = false 
-    /*
+    
     if(serverTime.timezone == date.timezone){
         if(
             serverTime.date == date.date &&
@@ -334,16 +334,8 @@ function checkTime(date){
                 }
             }
         }
-    }*/
-	allocateTime()
-	console.log(serverTime,date)
-	if(
-        serverTime.date == date.date &&
-        serverTime.month == date.month &&
-        serverTime.year == date.year
-        ){
-        output = true
     }
+	allocateTime()
     return output
 }	
 
@@ -1448,7 +1440,7 @@ app.get("/doccie",async(request,response)=>{
 const GetUserData = async(userId)=>{
 	let output;
 	
-	try{
+	//try{
 		
 		let getUsers = await mongoClient.db("YEMPData").collection("MainData").findOne({"name":"user-profiles"});
 		
@@ -1460,9 +1452,9 @@ const GetUserData = async(userId)=>{
 		
 		output = user
 		
-	}catch{
+	/*}catch{
 		output = null
-	}
+	}*/
 	
 	
 	return output
@@ -5720,7 +5712,7 @@ async function updateUser(userData) {
 
 app.post("/login-user" , async( request, response)=>{
     
-    try{
+    //try{
         let data = request.body
         let email = data.email
         let password = data.password 
@@ -5740,6 +5732,10 @@ app.post("/login-user" , async( request, response)=>{
             response.send(JSON.stringify({"status" : "no-user"}))
         }else{
             
+			let socket = sockets.find((sockets)=>{
+				return sockets.userId === search.userId
+			})
+			
             let password2 = search.password
             
             if(password === password2){
@@ -5758,9 +5754,9 @@ app.post("/login-user" , async( request, response)=>{
             
         }
         
-    }catch{
+    /*}catch{
         response.send(JSON.stringify({"status" : "server-error"}))
-    }
+    }*/
 })
 
 app.post("/logout-user" , async( request, response)=>{
@@ -11901,7 +11897,7 @@ const GetPostsByInterest = async(feed,accessor)=>{
 	
 	let output;
 	
-	//try{
+	try{
 		
 		//Get posts from other countries 
 		
@@ -11970,9 +11966,9 @@ const GetPostsByInterest = async(feed,accessor)=>{
 		}
 		
 		
-	//}catch{
-	//	output = null
-	//}
+	}catch{
+		output = null
+	}
 	
 	return output
 	
@@ -11980,7 +11976,7 @@ const GetPostsByInterest = async(feed,accessor)=>{
 
 const GetPostsByRegion = async(feed,userId)=>{
 	
-	let output;
+	let output = null;
 	
 	try{
 		
@@ -11996,19 +11992,19 @@ const GetPostsByRegion = async(feed,userId)=>{
 			let address1 = GetUserRegion(accessor)
 			let basics = userPosts[i].basicDetails;
 			//do not include group posts 
-			if(basics.groupPost != true){
+			if(basics.groupPost == false){
 				
 				let ownerId = basics.ownerId
 				let user = await GetUserData(ownerId)
 				let address2 = GetUserRegion(user)
 				
-				let drp1 = address1.districtRegionProvince.toRegex()
-				let c1 = address1.city.toRegex()
+				let drp1 = new RegExp(address1.districtRegionProvince)
+				let c1 = new RegExp(address1.city)
 				
 				if(
 					address1.country === address2.country ||
-					drp1.matches(address2.districtRegionProvince) ||
-					c1.matches(address2.city) ||
+					drp1.test(address2.districtRegionProvince) ||
+					c1.test(address2.city) ||
 					address1.zipCode === address2.zipCode ||
 					InterestsEval(accessor,it)
 				){
@@ -12033,13 +12029,13 @@ const GetPostsByRegion = async(feed,userId)=>{
 			let user = await GetUserData(ownerId)
 			let address2 = GetUserRegion(user)
 			
-			let drp1 = address1.districtRegionProvince.toRegex()
-			let c1 = address1.city.toRegex()
-			
+			let drp1 = new RegExp(address1.districtRegionProvince)
+			let c1 = new RegExp(address1.city)
+				
 			if(
 				address1.country === address2.country ||
-				drp1.matches(address2.districtRegionProvince) ||
-				c1.matches(address2.city) ||
+				drp1.test(address2.districtRegionProvince) ||
+				c1.test(address2.city) ||
 				address1.zipCode === address2.zipCode
 			){
 				marketPlacePostsOut.push(it)
@@ -12062,13 +12058,12 @@ const GetPostsByRegion = async(feed,userId)=>{
 			let user = await GetUserData(ownerId)
 			let address2 = GetUserRegion(user)
 			
-			let drp1 = address1.districtRegionProvince.toRegex()
-			let c1 = address1.city.toRegex()
-			
+			let drp1 = new RegExp(address1.districtRegionProvince)
+			let c1 = new RegExp(address1.city)
+				
 			if(
 				address1.country === address2.country ||
-				drp1.matches(address2.districtRegionProvince) ||
-				c1.matches(address2.city) ||
+				drptest(address2.city) ||
 				address1.zipCode === address2.zipCode
 			){
 				storyPostsOut.push(it)
@@ -12112,9 +12107,10 @@ const InterestsProcessor = async(feed,userId)=>{
 	let similar_area = await GetPostsByRegion(feed,userId);
 	let posts_by_interest = await GetPostsByInterest(similar_area,userId);
 	let process_business_posts_by_interest = await GetBizPostsByInterest(posts_by_interest,userId)
-	let consistencyFilter = await filterForConsistency(process_business_posts_by_interest)
 	
-	output = consistencyFilter
+	/*let consistencyFilter = await filterForConsistency(process_business_posts_by_interest)
+	console.log("consistency filter"+consistencyFilter)*/
+	output = process_business_posts_by_interest
 	
 	return output 
 	
@@ -12124,7 +12120,7 @@ const TimePeriodProcessor = async(feed)=>{
 	
 	let output;
 	
-	try{
+	//try{
 		
 		//sort user posts 
 		
@@ -12134,6 +12130,7 @@ const TimePeriodProcessor = async(feed)=>{
 		for(var i=0; i<userPosts.length; i++){
 			
 			let it = userPosts[i]
+			console.log("x"+it)
 			
 			let d1 = serverTime.date
 			let m1 = serverTime.month
@@ -12307,9 +12304,9 @@ const TimePeriodProcessor = async(feed)=>{
 		}
 		
 		
-	}catch{
+	/*}catch{
 		output = null
-	}
+	}*/
 	
 	return output
 }
@@ -12318,7 +12315,7 @@ const TimePeriodProcessor = async(feed)=>{
 async function organiseUserFeed(userId){
     let output; 
     
-    try{
+    //try{
             var getBusinessPosts = await mongoClient.db("YEMPData").collection("MainData").findOne({"name":"business-posts"}) 
             var getUserPosts = await mongoClient.db("YEMPData").collection("MainData").findOne({"name":"user-posts"})
             var getChannelPosts = await mongoClient.db("YEMPData").collection("MainData").findOne({"name":"channel-posts"})
@@ -12355,13 +12352,16 @@ async function organiseUserFeed(userId){
             //Processes (in this order)
     
 			let filterDeleted = await filterDeletedPosts(dataFeed)
+			console.log("filter deleted---->"+filterDeleted)
             let process_for_interests = await InterestsProcessor(filterDeleted,userId)
+			console.log("process_for_interests---->"+process_for_interests)
 			let process_for_dates = await TimePeriodProcessor(process_for_interests)
-            output = process_for_dates
+            console.log("process_for_dates---->"+process_for_dates)
+			output = process_for_dates
             
-    }catch{
-        output = null
-    }
+    //}catch{
+       // output = null
+    //}
     
     return output
 }
@@ -12429,6 +12429,8 @@ app.post("/get-posts-data", async(request,response)=>{
             var output = null  
               
             output = await organiseUserFeed(userId)
+			
+			console.log("final feed---->"+output)
             
 			if(output){				
 				response.send(JSON.stringify({"status":"success","data":output}))  
