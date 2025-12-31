@@ -329,7 +329,7 @@ function checkTime(date){
             if(date.date == serverTime.date){
                 output = true
             }else{
-                if(date.hours == targetHours || date.hours == targetHours+1 || date.hours == targetHours-1){
+                if(date.hours > targetHours || date.hours == targetHours){
                     output = true
                 }
             }
@@ -340,126 +340,6 @@ function checkTime(date){
 }	
 
 setInterval(timeProcessor,1000)
-
-async function getActiveUsers(){
-    let output = null 
-    
-    try{
-		
-        let getLeapYear = await mongoClient.db("YEMPData").collection("MainData").findOne({"name":"leap-year-status"})
-		if(getLeapYear.x == true){
-			let getSockets = await mongoClient.db("YEMPData").collection("MainData").findOne({"name":"user-sockets"})
-			output = getSockets.body 
-		}
-        
-    }catch{
-        output = null
-    }
-    
-    
-    return output
-}
-
-async function updateActiveSockets(sockets){
-    try{
-        await mongoClient.db("YEMPData").collection("MainData").updateOne({"name":"user-sockets"},{$set:{"body" : sockets}})
-    }catch{
-        console.log("An error occurred while processing user sockets")
-    }
-}
-
-const activateUserSocket = async(userId,IMEI)=>{
-    let activeUsers = await getActiveUsers()
-    let search = activeUsers.find((activeUsers)=>{
-        return activeUsers.userId === userId
-    })
-	if(IMEI === search.IMEI){		
-		search.active = true
-		search.alreadyLoggedIn = true
-		
-		transferSocket.emit("recieve-active-user",{
-			"userId": search.userId
-		})
-
-		await updateActiveSockets(activeUsers)
-	}
-}
-
-const addUserSocket = async(userId)=>{
-    let activeUsers = await getActiveUsers()
-    let newObj = {
-        "userId":userId, 
-        "postsSelected": [],
-        "active": true,
-        "mediaId": null,
-        "mediaFormat": null,
-        "currentConversation": null,
-		"businessId":null,
-		"emailAddress":null,
-		"vidType":null,
-		"alreadyLoggedIn":true
-    }
-    
-    activeUsers.push(newObj)
-    
-    await updateActiveSockets(activeUsers)
-}
-
-const getUserSocket = async(userId)=>{
-    var output = null 
-    
-    let activeSockets = await getActiveUsers()
-    
-    let search = activeSockets.find((activeSockets)=>{
-        return activeSockets.userId === userId
-    })
-    if(search){
-        output = search
-    }
-    
-    return output
-}
-
-const loginSocketFunction = async(userId)=>{
-    let activeSockets = await getActiveUsers()
-    
-    let search = activeSockets.find((activeSockets)=>{
-        return activeSockets.userId === userId
-    })
-    
-    
-    if(search){
-        search.active = true
-    }else{
-        addUserSocket(userId) 
-    }
-    
-    await updateActiveSockets(activeSockets)
-}
-
-const checkIfSocketActive = async(userId)=>{
-    let output = false
-	let getSockets = await mongoClient.db("YEMPData").collection("MainData").findOne({"name":"user-sockets"})
-    let activeSockets = getSockets.body
-    let search = activeSockets.find((activeSockets)=>{
-        return activeSockets.userId === userId
-    })
-    
-    
-    if(search != null){
-		if(search.active == true && search.alreadyLoggedIn == true){
-			output = true
-		}
-		/*let getLeapYear = mongoClient.db("YEMPData").collection("MainData").findOne({"name":"leap-year-status"})
-		if(getLeapYear.x == true){			
-			if(search.active == true && search.alreadyLoggedIn == true){
-				output = true
-			}
-		}*/
-    }
-    
-    return output
-}
 
 let transferSocket = null
 
@@ -1408,6 +1288,126 @@ io.on("connection", (socket)=>{
 	
 	
 })
+
+async function getActiveUsers(){
+    let output = null 
+    
+    try{
+		
+        let getLeapYear = await mongoClient.db("YEMPData").collection("MainData").findOne({"name":"leap-year-status"})
+		if(getLeapYear.x == true){
+			let getSockets = await mongoClient.db("YEMPData").collection("MainData").findOne({"name":"user-sockets"})
+			output = getSockets.body 
+		}
+        
+    }catch{
+        output = null
+    }
+    
+    
+    return output
+}
+
+async function updateActiveSockets(sockets){
+    try{
+        await mongoClient.db("YEMPData").collection("MainData").updateOne({"name":"user-sockets"},{$set:{"body" : sockets}})
+    }catch{
+        console.log("An error occurred while processing user sockets")
+    }
+}
+
+const activateUserSocket = async(userId,IMEI)=>{
+    let activeUsers = await getActiveUsers()
+    let search = activeUsers.find((activeUsers)=>{
+        return activeUsers.userId === userId
+    })
+	if(IMEI === search.IMEI){		
+		search.active = true
+		search.alreadyLoggedIn = true
+		
+		transferSocket.emit("recieve-active-user",{
+			"userId": search.userId
+		})
+
+		await updateActiveSockets(activeUsers)
+	}
+}
+
+const addUserSocket = async(userId)=>{
+    let activeUsers = await getActiveUsers()
+    let newObj = {
+        "userId":userId, 
+        "postsSelected": [],
+        "active": true,
+        "mediaId": null,
+        "mediaFormat": null,
+        "currentConversation": null,
+		"businessId":null,
+		"emailAddress":null,
+		"vidType":null,
+		"alreadyLoggedIn":true
+    }
+    
+    activeUsers.push(newObj)
+    
+    await updateActiveSockets(activeUsers)
+}
+
+const getUserSocket = async(userId)=>{
+    var output = null 
+    
+    let activeSockets = await getActiveUsers()
+    
+    let search = activeSockets.find((activeSockets)=>{
+        return activeSockets.userId === userId
+    })
+    if(search){
+        output = search
+    }
+    
+    return output
+}
+
+const loginSocketFunction = async(userId)=>{
+    let activeSockets = await getActiveUsers()
+    
+    let search = activeSockets.find((activeSockets)=>{
+        return activeSockets.userId === userId
+    })
+    
+    
+    if(search){
+        search.active = true
+    }else{
+        addUserSocket(userId) 
+    }
+    
+    await updateActiveSockets(activeSockets)
+}
+
+const checkIfSocketActive = async(userId)=>{
+    let output = false
+	let getSockets = await mongoClient.db("YEMPData").collection("MainData").findOne({"name":"user-sockets"})
+    let activeSockets = getSockets.body
+    let search = activeSockets.find((activeSockets)=>{
+        return activeSockets.userId === userId
+    })
+    
+    
+    if(search != null){
+		if(search.active == true && search.alreadyLoggedIn == true){
+			output = true
+		}
+		/*let getLeapYear = mongoClient.db("YEMPData").collection("MainData").findOne({"name":"leap-year-status"})
+		if(getLeapYear.x == true){			
+			if(search.active == true && search.alreadyLoggedIn == true){
+				output = true
+			}
+		}*/
+    }
+    
+    return output
+}
 
 //Page server responses
 
