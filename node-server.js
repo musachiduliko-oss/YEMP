@@ -328,9 +328,11 @@ function checkTime(date){
             ){
             if(date.date == serverTime.date){
                 output = true
+				console.log("fff")
             }else{
-                if(date.hours > targetHours || date.hours == targetHours){
+                if(date.hours < targetHours || date.hours == targetHours){
                     output = true
+					console.log("fff2")
                 }
             }
         }
@@ -5728,6 +5730,7 @@ app.post("/login-user" , async( request, response)=>{
             return users.emailAddress === email
         })
         
+		console.log(search)
         if(!search){
             response.send(JSON.stringify({"status" : "no-user"}))
         }else{
